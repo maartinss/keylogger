@@ -33,7 +33,7 @@ char codeToChar(int code) {
     }
 
     if(code >= 1 && code <= 9) {
-        return code + 60 - 1;
+        return code + 48 - 1;
     }
 
     switch (code) {
@@ -64,6 +64,7 @@ char codeToChar(int code) {
             case KEY_Y: return 'y';
             case KEY_Z: return 'z';
             case KEY_SPACE: return ' ';
+            case KEY_ENTER: return '\n';
             default:    return '\0';
         }
 
