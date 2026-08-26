@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/input-event-codes.h>
@@ -13,6 +14,11 @@ int main(int argc, char** argv) {
     }
 
     int fd = open(argv[1], O_RDONLY, 0);
+
+    if(fd == -1) {
+        printf("The given file name was not found");
+        exit(-1);
+    }
 
     while(1) {
         struct input_event ie;
